@@ -7,11 +7,21 @@ from selenium import webdriver
 class MdReviewSpider(scrapy.Spider):
     name = 'md_review'
     allowed_domains = ['md.com']
-    # start_urls = ['https://www.md.com/doctor/vk-puppala-1-md']
+    start_urls = ['https://www.md.com/doctor/vk-puppala-1-md']
 
-    def start_requests(self):
+    def parse(self, response):
         self.driver = webdriver.Chrome('/home/azam/Documents/chromedriver')
-        self.driver.get('https://www.md.com/doctor/vk-puppala-1-md')
+        self.driver.get(response.url)
+
+        name = self.driver.find_element_by_css_selector(
+            'span[itemprop="name"]').text
+        address = self.driver.find_element_by_css_selector(
+            'div.office-address').text
+        if address != None:
+            address = address.replace('map', '').strip()
+
+        profile_pics = driver.find_element_by_css_selector(
+            'img[itemprop="photo"]').get_attribute('src')
 
         review_numbers = self.driver.find_element_by_css_selector('h4').text
 
@@ -26,17 +36,8 @@ class MdReviewSpider(scrapy.Spider):
             review = div.find_element_by_css_selector(
                 'div[itemprop="reviewBody"]').text
             hash_key = div.get_attribute('id')
-            # print('\n\n', review_date, '\n\n',
-            #       review_numbers, '\n\n', review, '\n\n\n')
-            print('\n\n')
-            yield{'reviewer_name:', reviewer_name,
-                  'review_date:', review_date,
-                  'review:', review,
-                  'review_numbers:', review_numbers,
-                  'hash_key:', hash_key}
+            print('\n\n', name, '\n\n', address, '\n\n', review_date, '\n\n',
+                  review_numbers, '\n\n', review, '\n\n\n', response.url, '\n\n')
             print('\n\n')
 
         self.driver.quit()
-
-    def parse(self, response):
-        pass
