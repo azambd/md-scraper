@@ -38,6 +38,7 @@ class MdReviewSpider(scrapy.Spider):
         reviewer_name_list = []
         review_list = []
         hash_key_list = []
+        source_url_list = []
 
         name = self.driver.find_element_by_css_selector(
             'span[itemprop="name"]').text
@@ -75,9 +76,10 @@ class MdReviewSpider(scrapy.Spider):
             reviewer_name_list.append(reviewer_name)
             review_list.append(review)
             hash_key_list.append(hash_key)
+            source_url_list.append(response.url)
 
-        df = cv.DataFrame(list(zip(name_list, address_list, profile_pics_list, address_list, review_numbers_list, review_date_list, reviewer_name_list, review_list, hash_key_list)), columns=[
-                          'name', 'address', 'profile_pics', 'address', 'review_numbers', 'review_date', 'reviewer_name', 'review', 'hash_key'])
+        df = cv.DataFrame(list(zip(name_list, address_list, profile_pics_list, address_list, review_numbers_list, review_date_list, reviewer_name_list, review_list, hash_key_list, source_url_list)), columns=[
+                          'name', 'address', 'profile_pics', 'address', 'review_numbers', 'review_date', 'reviewer_name', 'review', 'hash_key', 'source_url'])
 
         df.to_csv('md_headless_test_result.csv', index=False)
         self.driver.quit()
